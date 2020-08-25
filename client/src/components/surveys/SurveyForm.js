@@ -3,13 +3,7 @@ import { reduxForm, Field } from 'redux-form';
 import { Link } from 'react-router-dom';
 import SurveyField from './SurveyField';
 import validateEmails from '../../utils/validateEmail';
-
-const FIELDS = [
-    { label: 'Survey Title', name: 'title', error: 'You must provide a title!' },
-    { label: 'Subject Line', name: 'subject', error: 'You must provide a subject!' },
-    { label: 'Email Body', name: 'body', error: 'You must provide a body!' },
-    { label: 'Recipient List', name: 'emails', error: 'You must provide a recipients list!' }
-]
+import FIELDS from './formFields';
 
 class SurveyForm extends Component {
     renderFields() {
@@ -21,14 +15,15 @@ class SurveyForm extends Component {
     render() {
         return (
             <div>
-                <form onSubmit={this.props.handleSubmit(values => console.log(values))} >
+                <h5>Please enter survey details</h5>
+                <form onSubmit={this.props.handleSubmit(this.props.onSurveySubmit)} >
                     {this.renderFields()}
                     <Link to="/surveys" className="red btn-flat white-text">
                         Cancel
                     </Link>
                     <button type="submit" className="teal btn-flat right white-text">
-                        Next
-                        <i className="material-icons right">done</i>
+                        Review
+                        <i className="material-icons right">navigate_next</i>
                     </button>
                 </form>
             </div>
@@ -39,7 +34,7 @@ class SurveyForm extends Component {
 function validate(values) {
     const errors = {};
 
-    errors.emails = validateEmails(values.emails || '');
+    errors.recipients = validateEmails(values.recipients || '');
 
     FIELDS.forEach(({ name, error}) => {
         if (!values[name]) {
@@ -52,5 +47,6 @@ function validate(values) {
 
 export default reduxForm({
     validate,
-    form: 'surveyForm'
+    form: 'surveyForm',
+    destroyOnUnmount: false
 })(SurveyForm);
